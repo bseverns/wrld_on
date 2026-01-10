@@ -92,6 +92,7 @@
           "bpm": 120,
           "channelMappings": {
             "1": 1,
+            "2": 2,
             "3": 3,
             "4": 4
           },
@@ -536,16 +537,16 @@
           },
           "modules": [
             {
-              "id": "inst_1768073475579_mnc608uob",
-              "type": "ImageGallery"
-            },
-            {
-              "id": "inst_1767056743760_5126mf4qc",
-              "type": "ZKProofVisualizer"
+              "id": "inst_1768074556582_uvt1g79zl",
+              "type": "PulseField"
             },
             {
               "id": "inst_1767061459470_jdvo1cuuo",
               "type": "CubeCube"
+            },
+            {
+              "id": "inst_1767056743760_5126mf4qc",
+              "type": "ZKProofVisualizer"
             }
           ],
           "modulesData": {
@@ -705,7 +706,7 @@
                 ]
               }
             },
-            "inst_1768073475579_mnc608uob": {
+            "inst_1768074556582_uvt1g79zl": {
               "constructor": [
                 {
                   "name": "matrix",
@@ -734,44 +735,58 @@
                   ]
                 },
                 {
-                  "name": "imageDirectory",
+                  "name": "settings",
                   "options": [
                     {
-                      "name": "directory",
-                      "value": "images"
+                      "name": "cols",
+                      "value": 50
                     },
                     {
-                      "name": "fit",
-                      "value": "cover"
+                      "name": "rows",
+                      "value": 50
+                    },
+                    {
+                      "name": "dotMin",
+                      "value": 3
+                    },
+                    {
+                      "name": "dotMax",
+                      "value": 14
+                    },
+                    {
+                      "name": "frames",
+                      "value": 120
+                    },
+                    {
+                      "name": "speed",
+                      "value": 1
+                    },
+                    {
+                      "name": "colorA",
+                      "value": "#F0BE41"
+                    },
+                    {
+                      "name": "colorB",
+                      "value": "#5C496E"
+                    },
+                    {
+                      "name": "background",
+                      "value": "#202020"
                     }
                   ]
                 }
               ],
               "methods": {
-                "3": [
+                "4": [
                   {
-                    "name": "rotate",
+                    "name": "pulse",
                     "options": [
                       {
-                        "name": "direction",
-                        "value": "clockwise",
-                        "defaultVal": "clockwise"
-                      },
-                      {
-                        "name": "speed",
-                        "value": 16.1,
+                        "name": "amount",
+                        "value": 8,
                         "defaultVal": 1
-                      },
-                      {
-                        "name": "duration",
-                        "value": 6,
-                        "defaultVal": 0
                       }
                     ]
-                  },
-                  {
-                    "name": "random",
-                    "options": null
                   }
                 ]
               }
