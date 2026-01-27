@@ -1,0 +1,46 @@
+{
+  "osc": {
+    "host": "127.0.0.1",
+    "port": 8000,
+    "listenHost": "0.0.0.0",
+    "listenPort": 8001,
+    "logInbound": false
+  },
+  "commands": {
+    "blackout": { "address": "/nw_wrld/blackout/enable", "on": [1], "off": [0] },
+    "feed": { "address": "/nw_wrld/feed/enable", "on": [1], "off": [0] },
+    "overlays": { "address": "/nw_wrld/overlays/enable", "on": [1], "off": [0] }
+  },
+  "startup": {
+    "apply": true,
+    "delayMs": 0,
+    "force": true,
+    "state": { "blackout": true, "feed": false, "overlays": false }
+  },
+  "watchdog": {
+    "enabled": true,
+    "timeoutSec": 10,
+    "checkIntervalMs": 500,
+    "fadeMs": 0,
+    "recoverOnActivity": false,
+    "safeState": { "blackout": true, "feed": false, "overlays": false }
+  },
+  "panic": {
+    "enabled": true,
+    "hotkey": "p",
+    "safeState": { "blackout": true, "feed": false, "overlays": false },
+    "exitAfter": false
+  },
+  "health": {
+    "logIntervalSec": 10,
+    "httpPort": 8181,
+    "fpsAddress": "/nw_wrld/health/fps"
+  },
+  "state": {
+    "subscriptions": {
+      "blackout": "/nw_wrld/blackout/state",
+      "feed": "/nw_wrld/feed/state",
+      "overlays": "/nw_wrld/overlays/state"
+    }
+  }
+}
