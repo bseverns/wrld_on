@@ -1,8 +1,12 @@
-# Migrations for mappings.json
+# Migrations for Workspace Control Profiles
+
+This file describes the optional local `workspace-controls.json` format validated by `interop/workspace-controls.schema.json`.
+
+It does not replace the mirrored authority snapshot in `interop/exports/live-rig.default.json`.
 
 ## Toggle OSC mappings that only send `[1]`
 
-Legacy toggle pads that only include:
+Legacy toggle pads in `workspace-controls.json` that only include:
 
 ```json
 {
@@ -26,7 +30,7 @@ Notes:
 
 ## Toggle MIDI mappings with implicit values
 
-For CC toggles that only sent a single value:
+For CC toggles in `workspace-controls.json` that only sent a single value:
 
 ```json
 {

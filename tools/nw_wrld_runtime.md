@@ -1,6 +1,6 @@
 # nw_wrld runtime wrapper
 
-Minimal OSC runtime guard for safe startup, watchdog, health logging, and panic.
+Minimal OSC runtime guard for safe startup, watchdog, health logging, panic, and shared semantic-id ingestion.
 
 ## Usage
 
@@ -12,6 +12,12 @@ Custom config:
 
 ```bash
 node tools/nw_wrld_runtime.js --config nw_wrld_data/json/runtimeConfig.json
+```
+
+Validate the mirrored rig profile and local semantic wiring first:
+
+```bash
+npm run validate
 ```
 
 One-command panic:

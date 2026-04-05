@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://live-rig.local/interop/rig.profile.schema.json",
+  "title": "Live Rig Exported Runtime Profile",
+  "type": "object",
+  "required": [
+    "snapshotVersion",
+    "exportedAt",
+    "source",
+    "authority",
+    "survivabilityTiers",
+    "controlLanes",
+    "endpointRules",
+    "semanticCatalog",
+    "bindings",
+    "repoRegistry",
+    "healthContract"
+  ],
+  "properties": {
+    "snapshotVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "exportedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "type": "object",
+      "required": ["contractVersion", "contractPath", "mappingsPath", "generatedBy"],
+      "properties": {
+        "contractVersion": { "type": "string" },
+        "contractPath": { "type": "string" },
+        "mappingsPath": { "type": "string" },
+        "generatedBy": { "type": "string" }
+      }
+    },
+    "authority": {
+      "type": "object"
+    },
+    "survivabilityTiers": {
+      "type": "object"
+    },
+    "controlLanes": {
+      "type": "object"
+    },
+    "endpointRules": {
+      "type": "object"
+    },
+    "semanticCatalog": {
+      "type": "object"
+    },
+    "bindings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/binding" },
+      "minItems": 1
+    },
+    "repoRegistry": {
+      "type": "array",
+      "items": { "type": "object" },
+      "minItems": 1
+    },
+    "healthContract": {
+      "type": "object"
+    }
+  },
+  "$defs": {
+    "binding": {
+      "type": "object",
+      "required": [
+        "semanticId",
+        "mappingRef",
+        "supported",
+        "transport",
+        "interaction"
+      ],
+      "properties": {
+        "semanticId": { "type": "string" },
+        "mappingRef": { "type": "string" },
+        "supported": { "type": "boolean" },
+        "transport": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "interaction": { "type": "string" },
+        "group": { "type": "string" },
+        "label": { "type": "string" },
+        "midi": {
+          "type": "array",
+          "items": { "type": "object" }
+        },
+        "osc": {
+          "type": "array",
+          "items": { "type": "object" }
+        },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

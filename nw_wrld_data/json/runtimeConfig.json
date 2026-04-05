@@ -6,10 +6,42 @@
     "listenPort": 8001,
     "logInbound": false
   },
+  "interop": {
+    "profilePath": "interop/exports/live-rig.default.json"
+  },
   "commands": {
     "blackout": { "address": "/nw_wrld/blackout/enable", "on": [1], "off": [0] },
     "feed": { "address": "/nw_wrld/feed/enable", "on": [1], "off": [0] },
     "overlays": { "address": "/nw_wrld/overlays/enable", "on": [1], "off": [0] }
+  },
+  "semanticBindings": {
+    "scene.intro": {
+      "kind": "scene",
+      "addresses": ["/video/scene/intro"],
+      "stateOn": { "blackout": false, "feed": true, "overlays": true }
+    },
+    "scene.crash": {
+      "kind": "scene",
+      "addresses": ["/video/scene/crash"],
+      "stateOn": { "blackout": false, "feed": true, "overlays": true }
+    },
+    "scene.soft": {
+      "kind": "scene",
+      "addresses": ["/video/scene/soft"],
+      "stateOn": { "blackout": false, "feed": true, "overlays": false }
+    },
+    "scene.clean_camera": {
+      "kind": "scene",
+      "addresses": ["/video/scene/clean_camera"],
+      "stateOn": { "blackout": false, "feed": true, "overlays": false }
+    },
+    "state.blackout": {
+      "kind": "command",
+      "addresses": ["/rig/state/blackout"],
+      "command": "blackout",
+      "onValue": 1,
+      "offValue": 0
+    }
   },
   "startup": {
     "apply": true,

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/live-rig-control/interop.schema.json",
-  "title": "Live Rig Control Mappings Interop",
+  "$id": "https://wrld-on.local/interop/workspace-controls.schema.json",
+  "title": "wrld_on Workspace Control Profiles",
   "type": "object",
   "required": [
     "profiles"

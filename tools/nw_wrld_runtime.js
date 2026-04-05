@@ -29,6 +29,10 @@ const DEFAULT_CONFIG = {
     feed: { address: "/nw_wrld/feed/enable", on: [1], off: [0] },
     overlays: { address: "/nw_wrld/overlays/enable", on: [1], off: [0] }
   },
+  interop: {
+    profilePath: "interop/exports/live-rig.default.json"
+  },
+  semanticBindings: {},
   startup: {
     apply: true,
     delayMs: 0,
@@ -120,7 +124,9 @@ const loadConfig = () => {
 const config = loadConfig();
 
 const runtimeState = {
-  snapshot: {},
+  snapshot: {
+    semantic: {}
+  },
   fps: null,
   lastOscAt: Date.now(),
   watchdogActive: false
@@ -130,6 +136,21 @@ const addressToStateKey = {};
 if (config.state && config.state.subscriptions) {
   for (const [key, address] of Object.entries(config.state.subscriptions)) {
     addressToStateKey[address] = key;
+  }
+}
+
+const semanticAddressToBinding = {};
+if (config.semanticBindings && typeof config.semanticBindings === "object") {
+  for (const [semanticId, binding] of Object.entries(config.semanticBindings)) {
+    if (!binding || !Array.isArray(binding.addresses)) {
+      continue;
+    }
+    for (const address of binding.addresses) {
+      semanticAddressToBinding[address] = {
+        ...binding,
+        semanticId
+      };
+    }
   }
 }
 
@@ -265,6 +286,35 @@ const applyCommand = (name, enabled, options = {}) => {
   runtimeState.snapshot[name] = enabled;
 };
 
+const recordSemanticSnapshot = (semanticId, value) => {
+  if (!runtimeState.snapshot.semantic) {
+    runtimeState.snapshot.semantic = {};
+  }
+  runtimeState.snapshot.semantic[semanticId] = value;
+};
+
+const extractSemanticValue = (message, binding) => {
+  if (!message || !Array.isArray(message.args) || message.args.length === 0) {
+    return binding.onValue !== undefined ? binding.onValue : true;
+  }
+  return message.args.length === 1 ? message.args[0] : message.args.slice();
+};
+
+const coerceSemanticActive = (value, binding) => {
+  const firstValue = Array.isArray(value) ? value[0] : value;
+  if (typeof firstValue === "boolean") {
+    return firstValue;
+  }
+  if (typeof firstValue === "number") {
+    return firstValue !== (binding.offValue !== undefined ? binding.offValue : 0);
+  }
+  if (typeof firstValue === "string") {
+    const normalized = firstValue.trim().toLowerCase();
+    return !["", "0", "false", "off"].includes(normalized);
+  }
+  return Boolean(firstValue);
+};
+
 const applyNamedState = (state, options = {}) => {
   if (!state || typeof state !== "object") {
     return;
@@ -292,6 +342,54 @@ const applyNamedState = (state, options = {}) => {
     if (config.commands && config.commands[key]) {
       applyCommand(key, Boolean(state[key]), options);
     }
+  }
+};
+
+const applySemanticBinding = (binding, message) => {
+  const value = extractSemanticValue(message, binding);
+  const active = coerceSemanticActive(value, binding);
+
+  recordSemanticSnapshot(binding.semanticId, value);
+
+  if (binding.kind === "command") {
+    if (binding.command) {
+      applyCommand(binding.command, active, { force: true });
+    }
+    return;
+  }
+
+  if (binding.kind === "scene") {
+    if (active) {
+      runtimeState.snapshot.activeScene = binding.semanticId;
+      if (binding.stateOn) {
+        applyNamedState(binding.stateOn, { force: true });
+      }
+    } else if (runtimeState.snapshot.activeScene === binding.semanticId) {
+      runtimeState.snapshot.activeScene = null;
+      if (binding.stateOff) {
+        applyNamedState(binding.stateOff, { force: true });
+      }
+    }
+    return;
+  }
+
+  if (binding.kind === "state") {
+    if (binding.command) {
+      applyCommand(binding.command, active, { force: true });
+    }
+    if (binding.stateKey) {
+      runtimeState.snapshot[binding.stateKey] = active;
+    }
+    if (active && binding.stateOn) {
+      applyNamedState(binding.stateOn, { force: true });
+    } else if (!active && binding.stateOff) {
+      applyNamedState(binding.stateOff, { force: true });
+    }
+    return;
+  }
+
+  if (binding.stateKey) {
+    runtimeState.snapshot[binding.stateKey] = value;
   }
 };
 
@@ -362,6 +460,9 @@ const startHealthServer = () => {
 const initRuntime = () => {
   console.log(`OSC out: ${config.osc.host}:${config.osc.port}`);
   console.log(`OSC in: ${config.osc.listenHost}:${config.osc.listenPort}`);
+  if (config.interop && config.interop.profilePath) {
+    console.log(`Rig profile: ${config.interop.profilePath}`);
+  }
   if (config.health && config.health.httpPort) {
     console.log(`Health HTTP: 0.0.0.0:${config.health.httpPort}`);
   }
@@ -396,6 +497,10 @@ const initRuntime = () => {
         } else {
           runtimeState.snapshot[key] = message.args;
         }
+      }
+      const semanticBinding = semanticAddressToBinding[message.address];
+      if (semanticBinding) {
+        applySemanticBinding(semanticBinding, message);
       }
     }
   });

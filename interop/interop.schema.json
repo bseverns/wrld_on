@@ -1,0 +1,132 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://live-rig.local/interop/interop.schema.json",
+  "title": "Live Rig Interop Mappings",
+  "type": "object",
+  "required": ["mappings"],
+  "properties": {
+    "contractVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "mappings": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": { "$ref": "#/$defs/mapping" },
+          "minItems": 1
+        },
+        {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/mappingNoId" }
+        }
+      ]
+    },
+    "groups": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/group" }
+    },
+    "meta": {
+      "type": "object"
+    }
+  },
+  "$defs": {
+    "group": {
+      "type": "object",
+      "properties": {
+        "label": { "type": "string" },
+        "exclusive": { "type": "boolean" },
+        "description": { "type": "string" }
+      }
+    },
+    "mappingBase": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "enabled": { "type": "boolean" },
+        "interaction": { "enum": ["momentary", "toggle", "continuous"] },
+        "type": { "enum": ["momentary", "toggle", "continuous"] },
+        "toggle": { "type": "boolean" },
+        "group": { "type": "string" },
+        "exclusive": { "type": "boolean" },
+        "osc": { "$ref": "#/$defs/oscBindingOrArray" },
+        "midi": { "$ref": "#/$defs/midiBindingOrArray" },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "meta": { "type": "object" }
+      },
+      "anyOf": [{ "required": ["osc"] }, { "required": ["midi"] }]
+    },
+    "mapping": {
+      "allOf": [{ "$ref": "#/$defs/mappingBase" }, { "required": ["id"] }]
+    },
+    "mappingNoId": {
+      "allOf": [{ "$ref": "#/$defs/mappingBase" }]
+    },
+    "oscBindingOrArray": {
+      "oneOf": [
+        { "$ref": "#/$defs/oscBinding" },
+        {
+          "type": "array",
+          "items": { "$ref": "#/$defs/oscBinding" },
+          "minItems": 1
+        }
+      ]
+    },
+    "oscBinding": {
+      "type": "object",
+      "required": ["address"],
+      "properties": {
+        "address": { "type": "string" },
+        "args": { "$ref": "#/$defs/args" },
+        "onArgs": { "$ref": "#/$defs/args" },
+        "offArgs": { "$ref": "#/$defs/args" },
+        "queryAddress": { "type": "string" },
+        "queryArgs": { "$ref": "#/$defs/args" },
+        "stateAddress": { "type": "string" },
+        "stateArgs": { "$ref": "#/$defs/args" }
+      }
+    },
+    "midiBindingOrArray": {
+      "oneOf": [
+        { "$ref": "#/$defs/midiBinding" },
+        {
+          "type": "array",
+          "items": { "$ref": "#/$defs/midiBinding" },
+          "minItems": 1
+        }
+      ]
+    },
+    "midiBinding": {
+      "type": "object",
+      "properties": {
+        "device": { "type": "string" },
+        "type": { "enum": ["note", "cc"] },
+        "channel": { "type": "integer", "minimum": 1, "maximum": 16 },
+        "number": { "type": "integer", "minimum": 0, "maximum": 127 },
+        "note": { "type": "integer", "minimum": 0, "maximum": 127 },
+        "cc": { "type": "integer", "minimum": 0, "maximum": 127 },
+        "onValue": { "type": "integer", "minimum": 0, "maximum": 127 },
+        "offValue": { "type": "integer", "minimum": 0, "maximum": 127 },
+        "value": { "type": "integer", "minimum": 0, "maximum": 127 }
+      },
+      "required": ["channel"],
+      "anyOf": [{ "required": ["number"] }, { "required": ["note"] }, { "required": ["cc"] }]
+    },
+    "args": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "type": "number" },
+          { "type": "string" },
+          { "type": "boolean" },
+          { "type": "null" }
+        ]
+      }
+    }
+  }
+}

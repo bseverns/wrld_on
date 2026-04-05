@@ -18,14 +18,14 @@ const hasFlag = (flag) => args.includes(flag);
 const mappingsPath =
   getArgValue("--file") ||
   getArgValue("--mappings") ||
-  path.resolve(process.cwd(), "mappings.json");
+  path.resolve(process.cwd(), "workspace-controls.json");
 const requestedId = getArgValue("--id") || getArgValue("-i");
 const requestedAddress = getArgValue("--address");
 const profileFilter = getArgValue("--profile");
 const action = hasFlag("--off") ? "off" : "on";
 
 if (!requestedId && !requestedAddress) {
-  console.error("Usage: node tools/simulate-mapping.js --id <pad-id-or-osc-address> [--file mappings.json] [--profile name] [--on|--off]");
+  console.error("Usage: node tools/simulate-mapping.js --id <pad-id-or-osc-address> [--file workspace-controls.json] [--profile name] [--on|--off]");
   process.exit(1);
 }
 

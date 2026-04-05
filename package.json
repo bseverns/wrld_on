@@ -1,0 +1,14 @@
+{
+  "name": "wrld_on",
+  "private": true,
+  "scripts": {
+    "sync:rig-profile": "node tools/sync-rig-profile.js",
+    "validate:rig-profile": "node tools/validate-rig-profile.js",
+    "validate:workspace-wiring": "node tools/validate-workspace-wiring.js",
+    "validate": "npm run validate:rig-profile && npm run validate:workspace-wiring",
+    "runtime": "node tools/nw_wrld_runtime.js"
+  },
+  "dependencies": {
+    "ajv": "^8.12.0"
+  }
+}

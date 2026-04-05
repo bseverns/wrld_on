@@ -8,7 +8,7 @@ let Ajv;
 try {
   Ajv = require("ajv");
 } catch (error) {
-  console.error('Missing dependency "ajv". Install with: npm install ajv');
+  console.error('Missing dependency "ajv". Install with: npm install');
   process.exit(2);
 }
 
@@ -23,11 +23,11 @@ const getArgValue = (flag) => {
 
 const schemaPath =
   getArgValue("--schema") ||
-  path.resolve(process.cwd(), "interop.schema.json");
+  path.resolve(process.cwd(), "interop", "workspace-controls.schema.json");
 const mappingsPath =
   getArgValue("--file") ||
   getArgValue("--mappings") ||
-  path.resolve(process.cwd(), "mappings.json");
+  path.resolve(process.cwd(), "workspace-controls.json");
 
 const readJson = (filePath) => {
   try {
